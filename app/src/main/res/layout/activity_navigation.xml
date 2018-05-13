@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context="com.example.administrator.moblieplayer.view.activity.NavigationActivity">
+
+    <com.example.administrator.moblieplayer.view.ui.TitleBar
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+    </com.example.administrator.moblieplayer.view.ui.TitleBar>
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="60dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/fl_content"
+        android:background="#C4C4C4" />
+
+    <RadioGroup
+        android:id="@+id/rp_radio"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rbt_localvideo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:checked="true"
+            android:textColor="@color/green"
+            android:drawableTop="@drawable/selct_rbt_localvideo"
+            android:gravity="center"
+            android:text="本地视频" />
+
+        <RadioButton
+            android:id="@+id/rbt_localmusic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"
+            android:textColor="@color/green"
+            android:button="@null"
+            android:drawableTop="@drawable/selct_rbt_localmusic"
+            android:gravity="center"
+            android:text="本地音乐" />
+
+        <RadioButton
+            android:id="@+id/rbt_netvideo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"
+            android:textColor="@color/green"
+            android:button="@null"
+            android:drawableTop="@drawable/selct_rbt_netvideo"
+            android:gravity="center"
+            android:text="网络视频" />
+
+        <RadioButton
+            android:id="@+id/rbt_netmusic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/green"
+            android:button="@null"
+            android:drawableTop="@drawable/selct_rbt_netmusic"
+            android:gravity="center"
+            android:text="网络音乐" />
+    </RadioGroup>
+</RelativeLayout>
+
+
+
+

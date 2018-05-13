@@ -4,9 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <TextView
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textSize="25dp"
+        android:textColor="#000000"
         android:text="fragment localmusic"/>
 
 </LinearLayout>

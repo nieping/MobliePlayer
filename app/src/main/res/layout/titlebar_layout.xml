@@ -1,6 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="60dp"
+    android:background="#4876FF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+
+        android:paddingTop="10dp">
+
+        <ImageView
+            android:id="@+id/iv_title_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_topbanner_logo" />
+
+        <EditText
+            android:id="@+id/et_titlebar_sousuokuang"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/selct_titlebar_text"
+            android:drawableLeft="@mipmap/ic_sousuokuang_press"
+            android:hint="  全网搜索"
+            android:paddingLeft="20dp"
+
+            android:textColorHint="#ffffff" />
+
+        <RelativeLayout
+            android:id="@+id/rl_titlebar_game"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_title_game"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/ic_topbanner_game" />
+
+            <View
+                android:id="@+id/view_title_point"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_toRightOf="@+id/iv_title_game"
+                android:background="@drawable/selct_titlebar_point"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_title_lishi"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:src="@mipmap/ic_topbanner_record" />
+    </LinearLayout>
 
 </LinearLayout>
