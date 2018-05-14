@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MobliePlayer.iml" filepath="$PROJECT_DIR$/MobliePlayer.iml" />
+      <module fileurl="file://D:\android\MobliePlayer\MobliePlayer.iml" filepath="D:\android\MobliePlayer\MobliePlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TLRLoadRefresh/library/library.iml" filepath="$PROJECT_DIR$/TLRLoadRefresh/library/library.iml" />
+      <module fileurl="file://D:\android\MobliePlayer\app\app.iml" filepath="D:\android\MobliePlayer\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/librarys.iml" filepath="$PROJECT_DIR$/library/librarys.iml" />
+      <module fileurl="file://D:\android\MobliePlayer\TLRLoadRefresh\library\library.iml" filepath="D:\android\MobliePlayer\TLRLoadRefresh\library\library.iml" />
     </modules>
   </component>
 </project>

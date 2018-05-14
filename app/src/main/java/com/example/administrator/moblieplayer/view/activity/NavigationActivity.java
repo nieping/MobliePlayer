@@ -66,7 +66,7 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         for (int i = 0;i <=radioGroup.getChildCount();i++){
             button = (RadioButton) radioGroup.getChildAt(0);
             if (button == radioGroup.getChildAt(0)) {
-                button.setTextColor(getResources().getColor(R.color.blue));
+                button.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         }
 
@@ -115,9 +115,9 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
             id = checkedId;
             if (id ==  radioGroup.getCheckedRadioButtonId()) {
                 button = (RadioButton) radioGroup.getChildAt(i);
-                button.setTextColor(getResources().getColor(R.color.blue));
+                button.setTextColor(getResources().getColor(R.color.colorPrimary));
             }else {
-                button.setTextColor(getResources().getColor(R.color.green));
+                button.setTextColor(getResources().getColor(R.color.colorAccent));
             }
         }
         if (mFragment != null) {
