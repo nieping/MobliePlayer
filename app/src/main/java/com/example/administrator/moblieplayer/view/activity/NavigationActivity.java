@@ -1,6 +1,7 @@
 package com.example.administrator.moblieplayer.view.activity;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -63,7 +64,7 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         int id = radioGroup.getId();
         RadioButton button;
 
-        for (int i = 0;i <=radioGroup.getChildCount();i++){
+        for (int i = 0; i <= radioGroup.getChildCount(); i++) {
             button = (RadioButton) radioGroup.getChildAt(0);
             if (button == radioGroup.getChildAt(0)) {
                 button.setTextColor(getResources().getColor(R.color.blue));
@@ -71,11 +72,12 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         }
 
 
-
         mFragment = localVideoFragment;
         radioGroup.setOnCheckedChangeListener(this);
         titleBar.setTitleOnClickListener(this);
     }
+
+
 
     @Override
     public void onItemLishiClick() {
@@ -107,17 +109,15 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
      * 设置fragment
      */
     private void setFragment(int checkedId) {
+        FragmentManager manager = getFragmentManager();
         Log.e(TAG, "initView: ==========radioGroup" + radioGroup.getCheckedRadioButtonId() + "======checkedId========" + checkedId);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        RadioButton button = null;
-        for (int i = 0;i <=radioGroup.getChildCount();i++){
-           int id;
-            id = checkedId;
-            if (id ==  radioGroup.getCheckedRadioButtonId()) {
-                button = (RadioButton) radioGroup.getChildAt(i);
-                button.setTextColor(getResources().getColor(R.color.blue));
-            }else {
-                button.setTextColor(getResources().getColor(R.color.green));
+        for (int i = 0; i <= radioGroup.getChildCount(); i++) {
+            ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.green));
+            if (checkedId == radioGroup.getChildAt(i).getId()) {
+                ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.green));
+            } else {
+                ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.blue));
             }
         }
         if (mFragment != null) {
@@ -125,10 +125,8 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         }
         switch (checkedId) {
             case R.id.rbt_localmusic:
-
                 localMusicFragment = new LocalMusicFragment();
                 transaction.add(R.id.fl_content, localMusicFragment);
-
                 transaction.commit();
                 mFragment = localMusicFragment;
 
@@ -136,7 +134,6 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
             case R.id.rbt_localvideo:
                 localVideoFragment = new LocalVideoFragment();
                 transaction.add(R.id.fl_content, localVideoFragment);
-
                 transaction.commit();
                 mFragment = localVideoFragment;
                 break;
@@ -150,7 +147,6 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
             case R.id.rbt_netmusic:
                 netMusicFragment = new NetMusicFragment();
                 transaction.add(R.id.fl_content, netMusicFragment);
-
                 transaction.commit();
                 mFragment = netMusicFragment;
                 break;
