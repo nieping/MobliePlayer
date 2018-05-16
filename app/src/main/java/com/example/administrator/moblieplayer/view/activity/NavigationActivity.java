@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.view.base.BaseActivity;
@@ -61,18 +62,11 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         localVideoFragment = new LocalVideoFragment();
         transaction.add(R.id.fl_content, localVideoFragment);
         transaction.commit();
-        int id = radioGroup.getId();
-        RadioButton button;
-
-        for (int i = 0; i <= radioGroup.getChildCount(); i++) {
-            button = (RadioButton) radioGroup.getChildAt(0);
-            if (button == radioGroup.getChildAt(0)) {
-                button.setTextColor(getResources().getColor(R.color.blue));
-            }
-        }
+        Log.e(TAG, "initView: " +radioGroup.getChildCount() );;
 
 
         mFragment = localVideoFragment;
+        setFragment(radioGroup.getChildAt(0).getId());
         radioGroup.setOnCheckedChangeListener(this);
         titleBar.setTitleOnClickListener(this);
     }
@@ -81,17 +75,17 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
 
     @Override
     public void onItemLishiClick() {
-
+        Toast.makeText(this,"onItemLishiClick",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTiemSousuoClick() {
-
+        Toast.makeText(this,"onTiemSousuoClick",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTiemGameClick() {
-
+        Toast.makeText(this,"onTiemGameClick",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -108,16 +102,16 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
     /**
      * 设置fragment
      */
+
     private void setFragment(int checkedId) {
         FragmentManager manager = getFragmentManager();
         Log.e(TAG, "initView: ==========radioGroup" + radioGroup.getCheckedRadioButtonId() + "======checkedId========" + checkedId);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        for (int i = 0; i <= radioGroup.getChildCount(); i++) {
-            ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.green));
+        for (int i = 0; i <= radioGroup.getChildCount() -1 ; i++) {
             if (checkedId == radioGroup.getChildAt(i).getId()) {
-                ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.green));
-            } else {
                 ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.blue));
+            } else {
+                ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.green));
             }
         }
         if (mFragment != null) {
