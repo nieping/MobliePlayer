@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 26
@@ -33,6 +34,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':library')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
