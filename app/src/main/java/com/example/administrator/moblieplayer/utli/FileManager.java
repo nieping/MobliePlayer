@@ -48,8 +48,7 @@ public class FileManager {
                 long size = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
                 int duration = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
                 int id = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-                int date = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                VideoBaen videoBaen =  new VideoBaen(id,name,size,path,duration,date);
+                VideoBaen videoBaen =  new VideoBaen(id,name,size,path);
                 videoBaens.add(videoBaen);
             }
         }catch (Exception e){
