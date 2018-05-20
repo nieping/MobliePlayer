@@ -20,14 +20,14 @@ import java.util.List;
  * Created by Administrator on 2018/5/16.
  */
 
-public class VideoAdapter extends BaseAdapter {
+public class MusicAdapter extends BaseAdapter {
     private Context context;
     private List videoList = new ArrayList();
     private VideoBaen videoBaen;
 
-    private String TAG = VideoAdapter.class.getSimpleName();
+    private String TAG = MusicAdapter.class.getSimpleName();
 
-    public VideoAdapter(Context context, List videoList) {
+    public MusicAdapter(Context context, List videoList) {
         this.context = context;
         this.videoList = videoList;
     }
