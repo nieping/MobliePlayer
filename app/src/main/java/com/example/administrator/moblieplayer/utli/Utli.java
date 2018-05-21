@@ -12,6 +12,11 @@ public class Utli {
         Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
 
     }
+    public static String formatter(Context context,long size){
+        String fileSize;
+        fileSize = android.text.format.Formatter.formatFileSize(context,size);
+        return fileSize;
+    }
 
 
 }

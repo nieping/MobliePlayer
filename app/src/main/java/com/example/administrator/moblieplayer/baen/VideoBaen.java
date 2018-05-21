@@ -9,11 +9,33 @@ public class VideoBaen {
     private String path;
     private String name;
     private long size;
-    public VideoBaen(int id,String name,long size,String path ){
+
+    public int getData() {
+        return data;
+    }
+
+    public void setData(int data) {
+        this.data = data;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    private int data;
+    private int duration;//持续时间
+
+    public VideoBaen(int id,String name,long size,String path,int duration,int data ){
         this.id = id;
         this.name = name;
         this.size = size;
         this.path = path;
+        this.duration = duration;
+        this.data = data;
     }
 
     public int getId() {

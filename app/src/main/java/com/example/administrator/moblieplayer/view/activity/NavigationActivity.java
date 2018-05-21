@@ -62,7 +62,8 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         localVideoFragment = new LocalVideoFragment();
         transaction.add(R.id.fl_content, localVideoFragment);
         transaction.commit();
-        Log.e(TAG, "initView: " +radioGroup.getChildCount() );;
+        Log.e(TAG, "initView: " + radioGroup.getChildCount());
+        ;
 
 
         mFragment = localVideoFragment;
@@ -72,20 +73,19 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
     }
 
 
-
     @Override
     public void onItemLishiClick() {
-        Toast.makeText(this,"onItemLishiClick",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "onItemLishiClick", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTiemSousuoClick() {
-        Toast.makeText(this,"onTiemSousuoClick",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "onTiemSousuoClick", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onTiemGameClick() {
-        Toast.makeText(this,"onTiemGameClick",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "onTiemGameClick", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -107,7 +107,7 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         FragmentManager manager = getFragmentManager();
         Log.e(TAG, "initView: ==========radioGroup" + radioGroup.getCheckedRadioButtonId() + "======checkedId========" + checkedId);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        for (int i = 0; i <= radioGroup.getChildCount() -1 ; i++) {
+        for (int i = 0; i <= radioGroup.getChildCount() - 1; i++) {
             if (checkedId == radioGroup.getChildAt(i).getId()) {
                 ((RadioButton) radioGroup.getChildAt(i)).setTextColor(getResources().getColor(R.color.blue));
             } else {
