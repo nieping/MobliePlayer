@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/refreshlayout"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <TextView
-        android:layout_centerInParent="true"
-        android:id="@+id/tv_nullnetmusic"
-        android:layout_marginTop="150dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:textColor="@color/red"
-        android:text="没有网络音乐"/>
-    <ListView
-        android:id="@+id/lv_netmusic"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </ListView>
+        <TextView
+            android:id="@+id/tv_nullnetmusic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="150dp"
+            android:text="没有网络音乐"
+            android:textColor="@color/red"
+            android:textSize="25dp" />
 
-</RelativeLayout>
+        <ListView
+            android:id="@+id/lv_netmusic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+
+    </RelativeLayout>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

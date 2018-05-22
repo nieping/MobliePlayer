@@ -11,6 +11,10 @@ import android.widget.TextView;
 
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.view.base.BaseFragment;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,7 +28,8 @@ public class NetMusicFragment extends BaseFragment {
     ListView lvNetMusic;
     @BindView(R.id.tv_nullnetmusic)
     TextView tvNullNetMusic;
-
+    @BindView(R.id.refreshlayout)
+    SmartRefreshLayout smartRefreshLayout;
     private Context mContext;
 
 
@@ -33,11 +38,27 @@ public class NetMusicFragment extends BaseFragment {
         View view =  inflater.inflate(R.layout.fragment_netmusic,container,false);
         ButterKnife.bind(this,view);
         mContext = getActivity();
-        initView();
         return view;
     }
 
-    private void initView() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        initView();
+    }
 
+    private void initView() {
+        smartRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                refreshlayout.finishRefresh(2000);
+            }
+        });
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                refreshlayout.finishLoadmore(2000);
+            }
+        });
     }
 }

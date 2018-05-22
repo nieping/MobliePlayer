@@ -8,9 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/TLRLoadRefresh/library" />
-            <option value="$PROJECT_DIR$/VitamioBundle-5.0.2/VitamioBundle-5.0.2/vitamio" />
-            <option value="$PROJECT_DIR$/VitamioBundle-5.0.2/VitamioBundle-5.0.2/vitamio-sample" />
+            <option value="$PROJECT_DIR$/VitamioBundle-master/vitamio" />
+            <option value="$PROJECT_DIR$/VitamioBundle-master/vitamio-sample" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

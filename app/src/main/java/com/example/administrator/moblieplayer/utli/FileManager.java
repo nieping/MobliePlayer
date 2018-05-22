@@ -34,6 +34,7 @@ public class FileManager {
          ContentResolver mContentResolver = context.getContentResolver();
         List<VideoBaen> videoBaens = new ArrayList<>();
         Cursor cursor = null;
+
         try {
             cursor = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,null,null,null, MediaStore.Video.Media.DEFAULT_SORT_ORDER);
             while (cursor.moveToNext()){
