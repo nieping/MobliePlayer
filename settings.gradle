@@ -1,2 +1,4 @@
-include ':app', ':library'
-project(':library').projectDir = new File('library')
+include ':app', ':library', ':vitamio-sample', ':vitamio'
+project(':library').projectDir = new File('TLRLoadRefresh/library')
+project(':vitamio-sample').projectDir = new File('VitamioBundle-5.0.2/VitamioBundle-5.0.2/vitamio-sample')
+project(':vitamio').projectDir = new File('VitamioBundle-5.0.2/VitamioBundle-5.0.2/vitamio')
