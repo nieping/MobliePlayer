@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.administrator.moblieplayer.R;
 
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 
 public class TitleBar extends LinearLayout implements View.OnClickListener {
     @BindView(R.id.et_titlebar_sousuokuang)
-    EditText titleBarSousuoKuang;
+    TextView titleBarSousuoKuang;
     @BindView(R.id.view_title_point)
     View tieleBarPoint;
     @BindView(R.id.iv_title_lishi)
