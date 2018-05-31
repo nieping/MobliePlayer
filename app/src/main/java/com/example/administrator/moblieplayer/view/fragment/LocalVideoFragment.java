@@ -1,33 +1,37 @@
 package com.example.administrator.moblieplayer.view.fragment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.adapter.VideoAdapter;
-import com.example.administrator.moblieplayer.baen.VideoBaen;
-import com.example.administrator.moblieplayer.utli.FileManager;
+import com.example.administrator.moblieplayer.baen.MediaBaen;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by Administrator on 2018/5/13.
@@ -38,22 +42,44 @@ public class LocalVideoFragment extends Fragment {
     ListView videoListView;
     @BindView(R.id.tv_nullvideo)
     TextView nullVideo;
-
+    @BindView(R.id.pb)
+    ProgressBar pd;
     @BindView(R.id.refreshlayout)
     SmartRefreshLayout smartRefreshLayout;
 
     private Context mContext;
     private VideoAdapter adapter = null;
     private String TAG = LocalVideoFragment.class.getSimpleName();
-    private List<VideoBaen> videoBaenList = null;
+    private List<MediaBaen> videoBaenList;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    pd.setVisibility(View.GONE);
+                    if (videoBaenList != null && videoBaenList.size() > 0){
+                        nullVideo.setVisibility(View.GONE);
+
+                        if (adapter == null){
+                            adapter = new VideoAdapter(mContext,videoBaenList);
+                            videoListView.setAdapter(adapter);
+                        }else {
+                            adapter.notifyDataSetChanged(videoBaenList);
+                        }
+                    }else {
+                        nullVideo.setVisibility(View.VISIBLE);
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e(TAG, "====================onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_localvideo, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, view);
-
 
         return view;
 
@@ -66,54 +92,79 @@ public class LocalVideoFragment extends Fragment {
     }
 
     private void initView() {
+        pd.setVisibility(View.VISIBLE);
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 refreshlayout.finishRefresh(2000);
                 getVideo();
-                Log.e(TAG, "=============onRefresh:============== " );
             }
         });
         smartRefreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
                 refreshlayout.finishLoadmore(2000);
-                Log.e(TAG, "==============onLoadmore: " );
+                getVideo();
             }
         });
 
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            Toast.makeText(mContext,"Sd卡不存在",Toast.LENGTH_SHORT).show();
-        }else {
-            getVideo();
-            Log.e(TAG, "initView: video ====" + videoBaenList);
-            if (videoBaenList.isEmpty()){
-                nullVideo.setVisibility(View.VISIBLE);
-            }else {
-                nullVideo.setVisibility(View.GONE);
-                if (adapter == null) {
-                    adapter = new VideoAdapter(mContext, videoBaenList);
+        getVideo();
+
+
+    }
+
+
+
+    public void getVideo() {
+        videoBaenList = new ArrayList<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isGrantExternalRW((Activity)mContext);
+                Cursor cursor = null;
+                try {
+                    ContentResolver mContentResolver = mContext.getContentResolver();
+                    cursor = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.DEFAULT_SORT_ORDER);
+                    while (cursor.moveToNext()) {
+                        String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                        String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
+                        String size = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+                        int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                        String artst = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST));
+                        MediaBaen videoBaen = new MediaBaen(name, path, size, data, artst);
+                        videoBaenList.add(videoBaen);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                        handler.sendEmptyMessage(1);
+                    }
                 }
-                videoListView.setAdapter(adapter);
             }
+        }).start();
+
+
+    }
+    public static boolean isGrantExternalRW(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            activity.requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, 1);
+
+            return false;
 
         }
 
+        return true;
     }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,true);
-    }
-
-    private void getVideo() {
-
-        File sdCard_filedir = Environment.getExternalStorageDirectory();
-        long totalSp = sdCard_filedir.getTotalSpace();
-        String total = android.text.format.Formatter.formatFileSize(mContext,totalSp);
-        Toast.makeText(mContext,"sdcadr======" +total,Toast.LENGTH_SHORT).show();
-        final FileManager fileManager = new FileManager(mContext);
-        videoBaenList = fileManager.getVideo(mContext);
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(this);
     }
 }
