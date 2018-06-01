@@ -1,7 +1,5 @@
 package com.example.administrator.moblieplayer.service.service;
 
-import com.google.gson.Gson;
-
 /**
  * Created by Administrator on 2018/5/29.
  */
@@ -13,6 +11,7 @@ public class BaseHttpModel {
      */
     @Override
     public String toString() {
-        return new Gson().toString();
+      /*  return new Gson().toString();*/
+      return "";
     }
 }

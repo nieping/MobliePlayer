@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -23,6 +25,7 @@ import com.example.administrator.moblieplayer.view.base.BaseActivity;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,15 +49,20 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
     Button btNext;
 
 
-    private String url;
     private Context mContext;
-    private Intent intent;
     private MediaPlayer mPlayer;
 
     private MusicPlayService musicPlayService;
     private MediaBaen baen;
     private ObjectAnimator animator;
     private SimpleDateFormat time = new SimpleDateFormat("mm:ss");
+    private boolean isPlay = false;
+    private boolean isAnimator = false;
+    private boolean isHandler = false;
+    private ArrayList<MediaBaen> musicBaens = new ArrayList<>();
+    private int mark;
+    private Intent intent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +70,20 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.activity_local_music_play);
         ButterKnife.bind(this);
         mContext = this;
-        Intent intent = getIntent();
-        baen = (MediaBaen) intent.getSerializableExtra("music");
+        intent = getIntent();
+        if (intent != null){
+            musicBaens = (ArrayList<MediaBaen>) intent.getSerializableExtra("musicBaens");
+            mark = getIntent().getIntExtra("mark", 0);
+
+        }
+
+        baen = musicBaens.get(mark);
         initView();
     }
 
     private void initView() {
         binServiceConnection();
-        if (baen != null){
+        if (baen != null) {
             mPlayer = new MediaPlayer();
             try {
                 mPlayer.setDataSource(baen.getPath());
@@ -80,7 +94,7 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
             }
         }
 
-        final ObjectAnimator animator = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f);
+        animator = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f);
         animator.setDuration(1000);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(-1);
@@ -115,26 +129,28 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
     /**
      * 判断播放器的状态
      */
-    public void playOrPause(){
-        if (mPlayer.isPlaying()){
+    public void playOrPause() {
+        if (mPlayer.isPlaying()) {
             mPlayer.pause();
-        }else {
+        } else {
             mPlayer.start();
         }
     }
-    public void stop(){
-        if (mPlayer != null){
+
+    public void stop() {
+        if (mPlayer != null) {
             mPlayer.stop();
             try {
                 mPlayer.reset();
                 mPlayer.setDataSource(baen.getPath());
                 mPlayer.seekTo(0);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
     }
+
     private void binServiceConnection() {
         Intent intent = new Intent(this, MusicPlayService.class);
         startService(intent);
@@ -155,33 +171,64 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
     };
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_play:
-                playOrPause();
-//                animator.start();
+                if (mPlayer != null) {
+                    seekBar.setProgress(mPlayer.getCurrentPosition());
+                    seekBar.setMax(mPlayer.getDuration());
+                    if (isPlay != true) {
+                        tvTimes.setText(time.format(mPlayer.getDuration()));
+                        btPlay.setBackgroundResource(R.drawable.bg_bt_play_select);
+                        playOrPause();
+                        isPlay = true;
+                        if (isAnimator == false) {
+                            animator.start();
+                            isAnimator = true;
+                        } else {
+                            animator.resume();
+                        }
+
+                    } else {
+                        btPlay.setBackgroundResource(R.drawable.btn_pause_status);
+                        tv_CurrTime.setText(time.format(mPlayer.getCurrentPosition()));
+                        animator.pause();
+                        isPlay = true;
+                    }
+                    if (isHandler == false){
+                        handler.post(runnable);
+                        isHandler = true;
+                    }
+                }
+
 
                 break;
             case R.id.bt_next:
-
+                if (mark >0 || mark < musicBaens.size() -1){
+                    mark ++ ;
+                }
                 break;
             case R.id.bt_previous:
-
+                if (mark >0 || mark < musicBaens.size() -1){
+                    mark -- ;
+                }
                 break;
             default:
                 break;
         }
     }
+
     public Handler handler = new Handler();
-    public Runnable runnable =new Runnable() {
+    public Runnable runnable = new Runnable() {
         @Override
         public void run() {
             tvTimes.setText(time.format(musicPlayService.mPlayer.getCurrentPosition()));
             seekBar.setProgress(musicPlayService.mPlayer.getCurrentPosition());
             seekBar.setMax(musicPlayService.mPlayer.getDuration());
             tv_CurrTime.setText(time.format(musicPlayService.mPlayer.getDuration()));
-            handler.postDelayed(runnable,200);
+            handler.postDelayed(runnable, 200);
         }
     };
 }

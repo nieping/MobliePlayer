@@ -28,7 +28,6 @@ import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,7 +49,7 @@ public class LocalVideoFragment extends Fragment {
     private Context mContext;
     private VideoAdapter adapter = null;
     private String TAG = LocalVideoFragment.class.getSimpleName();
-    private List<MediaBaen> videoBaenList;
+    private ArrayList<MediaBaen> videoBaenList;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -92,6 +91,7 @@ public class LocalVideoFragment extends Fragment {
     }
 
     private void initView() {
+
         pd.setVisibility(View.VISIBLE);
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override

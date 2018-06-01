@@ -28,7 +28,6 @@ import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +44,7 @@ public class LocalMusicFragment extends BaseFragment {
     @BindView(R.id.refreshlayout)
     SmartRefreshLayout smartRefreshLayout;
     private String TAG = LocalMusicFragment.class.getSimpleName();
-    private List<MediaBaen> musicBaenList;
+    private ArrayList<MediaBaen> musicBaenList;
     private Context mContext;
     private MusicAdapter adapter;
     private Handler handler = new Handler(){

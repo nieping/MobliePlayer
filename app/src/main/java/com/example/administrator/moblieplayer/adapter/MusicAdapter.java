@@ -13,7 +13,6 @@ import com.example.administrator.moblieplayer.baen.MediaBaen;
 import com.example.administrator.moblieplayer.view.activity.LocalMusicPlayActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/5/16.
@@ -21,18 +20,19 @@ import java.util.List;
 
 public class MusicAdapter extends BaseAdapter {
     private Context context;
-    private List<MediaBaen> musicBaens = new ArrayList();
+    private ArrayList<MediaBaen> musicBaens = new ArrayList();
     private MediaBaen musicBaen;
 
     private String TAG = MusicAdapter.class.getSimpleName();
+    private int mark;
 
-    public MusicAdapter(Context context, List<MediaBaen> musicBaens) {
+    public MusicAdapter(Context context, ArrayList<MediaBaen> musicBaens) {
         this.context = context;
         this.musicBaens = musicBaens;
     }
 
 
-    public void notifyDataSetChanged(List<MediaBaen> list) {
+    public void notifyDataSetChanged(ArrayList<MediaBaen> list) {
        notifyDataSetChanged();
         this.musicBaens = list;
     }
@@ -54,6 +54,7 @@ public class MusicAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        mark=i;
         ViewHodler hodler = null;
         if (view == null) {
            hodler = new ViewHodler();
@@ -77,7 +78,8 @@ public class MusicAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(context, LocalMusicPlayActivity.class);
-                intent.putExtra("music",musicBaen);
+                intent.putExtra("musicList", musicBaens);
+                intent.putExtra("mark",mark);
                 context.startActivity(intent);
             }
         });

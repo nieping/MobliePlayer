@@ -2,6 +2,7 @@ package com.example.administrator.moblieplayer.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,7 +14,6 @@ import com.example.administrator.moblieplayer.baen.MediaBaen;
 import com.example.administrator.moblieplayer.view.activity.VideoPlayViewActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/5/16.
@@ -21,17 +21,17 @@ import java.util.List;
 
 public class VideoAdapter extends BaseAdapter {
     private Context context;
-    private List<MediaBaen> videoList = new ArrayList();
-
+    private ArrayList<MediaBaen> videoList = new ArrayList();
+    private int mark = 0;
     private String TAG = VideoAdapter.class.getSimpleName();
 
-    public VideoAdapter(Context context, List<MediaBaen> videoList) {
+    public VideoAdapter(Context context, ArrayList<MediaBaen> videoList) {
         this.context = context;
         this.videoList = videoList;
     }
 
 
-    public void notifyDataSetChanged(List<MediaBaen> list) {
+    public void notifyDataSetChanged(ArrayList<MediaBaen> list) {
         notifyDataSetChanged();
         videoList = list;
 
@@ -53,7 +53,8 @@ public class VideoAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
+        mark = i;
         ViewHodler hodler = null;
         if (view == null) {
             hodler = new ViewHodler();
@@ -67,23 +68,26 @@ public class VideoAdapter extends BaseAdapter {
         } else {
             hodler = (ViewHodler) view.getTag();
         }
-       if (!videoList.isEmpty()){
-           final MediaBaen baen = videoList.get(i);
-           hodler.name.setText(baen.getName());
-          // hodler.size.setText(baen.getDuration());
-           hodler.time.setText(baen.getSize());
-           hodler.imageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.video_default_icon));
-           view.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View view) {
-                   Intent intent = new Intent();
-                   intent.setClass(context, VideoPlayViewActivity.class);
-                   intent.putExtra("video",baen);
-                   context.startActivity(intent);
 
-               }
-           });
-       }
+        if (!videoList.isEmpty()) {
+            final MediaBaen baen = videoList.get(i);
+            hodler.name.setText(baen.getName());
+            // hodler.size.setText(baen.getDuration());
+            hodler.time.setText(baen.getSize());
+            hodler.imageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.video_default_icon));
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setClass(context, VideoPlayViewActivity.class);
+                    intent.putExtra("videoList", videoList);
+                    intent.putExtra("mark", i);
+                    Log.e("tsg", "=" + i);
+                    context.startActivity(intent);
+
+                }
+            });
+        }
 
         return view;
     }
