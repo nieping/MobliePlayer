@@ -181,7 +181,7 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
                     seekBar.setMax(mPlayer.getDuration());
                     if (isPlay != true) {
                         tvTimes.setText(time.format(mPlayer.getDuration()));
-                        btPlay.setBackgroundResource(R.drawable.bg_bt_play_select);
+                        //btPlay.setBackgroundResource(R.drawable.bg_bt_play_select);
                         playOrPause();
                         isPlay = true;
                         if (isAnimator == false) {
