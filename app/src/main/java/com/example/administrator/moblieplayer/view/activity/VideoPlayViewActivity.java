@@ -171,16 +171,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_viceo:
-                if (isVolume) {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
-                    skViceo.setProgress(currentVolume);
-                    Utli.ToastUtil(mContext, "音量为：" + currentVolume);
-                } else {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
-                    skViceo.setProgress(0);
-                    isVolume = true;
-                    Utli.ToastUtil(mContext, "没有声音咯");
-                }
+                setVideoViceo();
                 break;
             case R.id.bt_switch:
 
@@ -189,40 +180,69 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.bt_video_previous:
-                if (mark >= 0 && mark <= videoList.size() - 1) {
-                    mark++;
-                    getMediaBaen(mark);
-                } else {
-                    Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
-                }
-
+                playPreviousVideo();
                 break;
             case R.id.bt_video_play:
-                if (videoView.isPlaying()) {
-                    videoView.pause();
-                    btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_play_selcet);
-                } else {
-                    videoView.start();
-                    btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_pause_selcet);
-                }
-
+                playVideo();
 
                 break;
             case R.id.bt_video_next:
-                if (mark >= 0 && mark <= videoList.size() - 1) {
-                    mark++;
-                    getMediaBaen(mark);
-                } else {
-                    Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
-                }
+                playNextVideo();
                 break;
             case R.id.bt_full_screen:
 
                 break;
         }
         handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
-        handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY,4000);
+        handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY, 4000);
 
+    }
+    public void setButtonState(){
+        if (videoList != null && videoList.size() > 0){
+            if (videoList.size() == 1){
+                btVideoNext.setBackgroundResource(R.mipmap.btn_pre_pressed);
+            }
+        }
+    }
+    public void setVideoViceo() {
+        if (isVolume) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
+            skViceo.setProgress(currentVolume);
+            Utli.ToastUtil(mContext, "音量为：" + currentVolume);
+        } else {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+            skViceo.setProgress(0);
+            isVolume = true;
+            Utli.ToastUtil(mContext, "没有声音咯");
+        }
+    }
+
+    public void playNextVideo() {
+        if (mark >= 0 && mark <= videoList.size() - 1) {
+            mark++;
+            getMediaBaen(mark);
+        } else {
+            Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void playPreviousVideo() {
+        if (mark >= 0 && mark <= videoList.size() - 1) {
+            mark--;
+            getMediaBaen(mark);
+        } else {
+            Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void playVideo() {
+        if (videoView.isPlaying()) {
+            videoView.pause();
+            btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_play_selcet);
+        } else {
+            videoView.start();
+            btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_pause_selcet);
+        }
     }
 
     /**
@@ -249,19 +269,6 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
 
     }
 
-    /**
-     * 判断播放器是否在播放
-     */
-    public void PlayOrPause() {
-        if (videoView.isPlaying()) {
-            videoView.pause();
-            btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_play_selcet);
-
-        } else {
-            videoView.start();
-            btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_pause_selcet);
-        }
-    }
 
     Handler handler = new Handler() {
         @Override
@@ -276,7 +283,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                         skVideo.setProgress(currentPosition);
                         break;
                     case MEDIACONTROLLER_VISIBILITY:
-                       hideMediaController();
+                        hideMediaController();
                         break;
                 }
             }
@@ -314,26 +321,28 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
-                handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
+            handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-                handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY,4000);
+            handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY, 4000);
         }
     }
 
-    private void hideMediaController(){
+    private void hideMediaController() {
         videoController.setVisibility(View.GONE);
-        isMediaControllerVisibility  = false;
+        isMediaControllerVisibility = false;
         handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
 
     }
-    private void showMediaController(){
+
+    private void showMediaController() {
         videoController.setVisibility(View.VISIBLE);
-        isMediaControllerVisibility  = true;
-        handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY,4000);
+        isMediaControllerVisibility = true;
+        handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY, 4000);
     }
+
     /**
      * 视频进度条监听
      */
@@ -353,7 +362,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY,4000);
+            handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY, 4000);
         }
     }
 
@@ -383,7 +392,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            PlayOrPause();
+            playVideo();
             return false;
         }
 
@@ -407,9 +416,9 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             if (isMediaControllerVisibility) {
-               hideMediaController();
+                hideMediaController();
             } else {
-              showMediaController();
+                showMediaController();
             }
 
 
