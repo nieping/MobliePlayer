@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.baen.MediaBaen;
@@ -35,7 +34,7 @@ import butterknife.ButterKnife;
 
 public class VideoPlayViewActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.video)
-    VideoView videoView;
+    com.example.administrator.moblieplayer.view.ui.VideoView videoView;
     @BindView(R.id.tv_video_name)
     TextView tvVideoName;
     @BindView(R.id.tv_system_time)
@@ -82,6 +81,11 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     private final int PLAY_STATUS = 10;
     private int currentVolume;
     private boolean isVolume = false;
+    private boolean isFullScreen = false;
+    private int fullScreenW = 0;
+    private int fullScreenH = 0;
+    private int defaultW = 0;
+    private int defaultH = 0;
 
 
     @Override
@@ -108,6 +112,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             videoList = (ArrayList<MediaBaen>) intent.getSerializableExtra("videoList");
             mark = intent.getIntExtra("mark", 0);
             getMediaBaen(mark);
+            setButtonState();
         }
     }
 
@@ -174,13 +179,14 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                 setVideoViceo();
                 break;
             case R.id.bt_switch:
-
+                Utli.ToastUtil(mContext,"没有此功能");
                 break;
             case R.id.bt_video_exit:
                 finish();
                 break;
             case R.id.bt_video_previous:
                 playPreviousVideo();
+                setButtonState();
                 break;
             case R.id.bt_video_play:
                 playVideo();
@@ -188,22 +194,90 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.bt_video_next:
                 playNextVideo();
+                setButtonState();
                 break;
             case R.id.bt_full_screen:
-
+                switchFullScreen();
                 break;
         }
         handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
         handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY, 4000);
 
     }
+
+    /**
+     * 设置全屏播放
+     */
+    private void switchFullScreen() {
+        if (isFullScreen){
+            //显示默认
+            setFullScreen();
+        }else {
+            //显示全屏
+           setDefaultScreen();
+        }
+    }
+    private void setDefaultScreen(){
+        int w = fullScreenW;
+        int h = fullScreenH;
+        videoView.setVidoViewSize(w,h);
+        btFullScreen.setBackgroundResource(R.drawable.bg_bt_default_screen_selcet);
+        isFullScreen = true;
+    }
+    private void setFullScreen(){
+        int w =defaultW;
+        int h = defaultH;
+        videoView.setVidoViewSize(w,h);
+        btFullScreen.setBackgroundResource(R.drawable.bg_bt_full_screen_selcet);
+        isFullScreen = false;
+    }
+
+    /**
+     * 设置按钮状态
+     */
     public void setButtonState(){
         if (videoList != null && videoList.size() > 0){
             if (videoList.size() == 1){
-                btVideoNext.setBackgroundResource(R.mipmap.btn_pre_pressed);
+                btVideoNext.setBackgroundResource(R.mipmap.btn_next_gray);
+                btVideoPrevious.setBackgroundResource(R.mipmap.btn_pre_gray);
+                btVideoNext.setEnabled(false);
+                btVideoPrevious.setEnabled(false);
+            }else if (videoList.size() == 2){
+                if (mark == 0){
+                    btVideoPrevious.setBackgroundResource(R.mipmap.btn_pre_gray);
+                    btVideoPrevious.setEnabled(false);
+                    btVideoNext.setBackgroundResource(R.drawable.bg_bt_next_select);
+                    btVideoNext.setEnabled(true);
+                }else if (mark == videoList.size() -1 ){
+                    btVideoPrevious.setBackgroundResource(R.drawable.bg_bt_previous_select);
+                    btVideoPrevious.setEnabled(true);
+                    btVideoNext.setBackgroundResource(R.mipmap.btn_next_gray);
+                    btVideoNext.setEnabled(false);
+                }
+            }else {
+                if (mark == 0){
+                    btVideoPrevious.setBackgroundResource(R.mipmap.btn_pre_gray);
+                    btVideoPrevious.setEnabled(false);
+                    btVideoNext.setBackgroundResource(R.drawable.bg_bt_next_select);
+                    btVideoNext.setEnabled(true);
+                }else if (mark == videoList.size() -1 ){
+                    btVideoPrevious.setBackgroundResource(R.drawable.bg_bt_previous_select);
+                    btVideoPrevious.setEnabled(true);
+                    btVideoNext.setBackgroundResource(R.mipmap.btn_next_gray);
+                    btVideoNext.setEnabled(false);
+                }else {
+                    btVideoPrevious.setBackgroundResource(R.drawable.bg_bt_previous_select);
+                    btVideoPrevious.setEnabled(true);
+                    btVideoNext.setBackgroundResource(R.drawable.bg_bt_next_select);
+                    btVideoNext.setEnabled(true);
+                }
             }
         }
     }
+
+    /**
+     * 设置视频播放音量
+     */
     public void setVideoViceo() {
         if (isVolume) {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
@@ -217,6 +291,9 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 播放下一个视频
+     */
     public void playNextVideo() {
         if (mark >= 0 && mark <= videoList.size() - 1) {
             mark++;
@@ -225,7 +302,9 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
         }
     }
-
+    /**
+     * 播放上一个视频
+     */
     public void playPreviousVideo() {
         if (mark >= 0 && mark <= videoList.size() - 1) {
             mark--;
@@ -234,7 +313,9 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
         }
     }
-
+    /**
+     * 播放暂停视频
+     */
     public void playVideo() {
         if (videoView.isPlaying()) {
             videoView.pause();
@@ -330,13 +411,18 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 隐藏控制面板
+     */
     private void hideMediaController() {
         videoController.setVisibility(View.GONE);
         isMediaControllerVisibility = false;
         handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
 
     }
-
+    /**
+     * 显示控制面板
+     */
     private void showMediaController() {
         videoController.setVisibility(View.VISIBLE);
         isMediaControllerVisibility = true;
