@@ -9,7 +9,9 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -86,6 +88,10 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     private int fullScreenH = 0;
     private int defaultW = 0;
     private int defaultH = 0;
+    private float startY;
+    private int maxVolume;
+    private float mVol;//按下的时候的当前音量
+    private float touchRang;
 
 
     @Override
@@ -95,7 +101,6 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         ButterKnife.bind(this);
         intent = getIntent();
         mContext = this;
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         initView();
         initData();
 
@@ -103,6 +108,11 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initData() {
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        getFullScreenWidthHeight();
+        maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        skViceo.setMax(maxVolume);
+        skViceo.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
         batteryBroadcastReceiver = new BatteryBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
@@ -116,12 +126,20 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 获取屏幕的高和宽
+     */
+    private void getFullScreenWidthHeight() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        fullScreenW = displayMetrics.widthPixels;
+        fullScreenH = displayMetrics.heightPixels;
+    }
+
     private void initView() {
         videoController.setVisibility(View.GONE);
         tvSystemTime.setText(systemTime.format(new Date(System.currentTimeMillis())));
         btViceo.setOnClickListener(this);
-        skViceo.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-        skViceo.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
         skViceo.setOnSeekBarChangeListener(new ViceoSeekBarChangeListener());
         btSwitch.setOnClickListener(this);
         skVideo.setOnSeekBarChangeListener(new VideoSeekBarChangeListener());
@@ -133,30 +151,27 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                mark++;
                 if (mark >= 0 && mark <= videoList.size() - 1) {
-                    mark++;
-                    getMediaBaen(mark);
+                    playNextVideo();
                 } else {
                     finish();
                 }
 
             }
         });
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                return false;
-            }
-        });
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                mp.start();
+                defaultH = mp.getVideoHeight();
+                defaultW = mp.getVideoWidth();
+                btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_pause_selcet);
                 tvDuration.setText(time.format(videoView.getDuration()));
                 tvVideoName.setText(mediaBaen.getName());
                 skVideo.setMax(videoView.getDuration());
                 handler.sendEmptyMessage(PLAY_STATUS);
-                videoView.start();
+                mp.start();
+                setDefaultScreen();
 
             }
         });
@@ -179,7 +194,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                 setVideoViceo();
                 break;
             case R.id.bt_switch:
-                Utli.ToastUtil(mContext,"没有此功能");
+                Utli.ToastUtil(mContext, "没有此功能");
                 break;
             case R.id.bt_video_exit:
                 finish();
@@ -209,63 +224,78 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
      * 设置全屏播放
      */
     private void switchFullScreen() {
-        if (isFullScreen){
+        if (isFullScreen) {
             //显示默认
-            setFullScreen();
-        }else {
+            setDefaultScreen();
+
+        } else {
             //显示全屏
-           setDefaultScreen();
+            setFullScreen();
         }
     }
-    private void setDefaultScreen(){
-        int w = fullScreenW;
-        int h = fullScreenH;
-        videoView.setVidoViewSize(w,h);
-        btFullScreen.setBackgroundResource(R.drawable.bg_bt_default_screen_selcet);
-        isFullScreen = true;
-    }
-    private void setFullScreen(){
-        int w =defaultW;
-        int h = defaultH;
-        videoView.setVidoViewSize(w,h);
+
+    /**
+     * 设置默认屏幕
+     */
+    private void setDefaultScreen() {
+        int width = fullScreenW;
+        int height = fullScreenH;
+        // for compatibility, we adjust size based on aspect ratio
+        if (defaultW * height < width * defaultH) {
+            //Log.i("@@@", "image too wide, correcting");
+            width = height * defaultW / defaultH;
+        } else if (defaultW * height > width * defaultH) {
+            //Log.i("@@@", "image too tall, correcting");
+            height = width * defaultH / defaultW;
+        }
+        videoView.setVidoViewSize(width, height);
         btFullScreen.setBackgroundResource(R.drawable.bg_bt_full_screen_selcet);
         isFullScreen = false;
     }
 
     /**
+     * 设置全屏
+     */
+    private void setFullScreen() {
+        videoView.setVidoViewSize(fullScreenW, fullScreenH);
+        btFullScreen.setBackgroundResource(R.drawable.bg_bt_default_screen_selcet);
+        isFullScreen = true;
+    }
+
+    /**
      * 设置按钮状态
      */
-    public void setButtonState(){
-        if (videoList != null && videoList.size() > 0){
-            if (videoList.size() == 1){
+    public void setButtonState() {
+        if (videoList != null && videoList.size() > 0) {
+            if (videoList.size() == 1) {
                 btVideoNext.setBackgroundResource(R.mipmap.btn_next_gray);
                 btVideoPrevious.setBackgroundResource(R.mipmap.btn_pre_gray);
                 btVideoNext.setEnabled(false);
                 btVideoPrevious.setEnabled(false);
-            }else if (videoList.size() == 2){
-                if (mark == 0){
+            } else if (videoList.size() == 2) {
+                if (mark == 0) {
                     btVideoPrevious.setBackgroundResource(R.mipmap.btn_pre_gray);
                     btVideoPrevious.setEnabled(false);
                     btVideoNext.setBackgroundResource(R.drawable.bg_bt_next_select);
                     btVideoNext.setEnabled(true);
-                }else if (mark == videoList.size() -1 ){
+                } else if (mark == videoList.size() - 1) {
                     btVideoPrevious.setBackgroundResource(R.drawable.bg_bt_previous_select);
                     btVideoPrevious.setEnabled(true);
                     btVideoNext.setBackgroundResource(R.mipmap.btn_next_gray);
                     btVideoNext.setEnabled(false);
                 }
-            }else {
-                if (mark == 0){
+            } else {
+                if (mark == 0) {
                     btVideoPrevious.setBackgroundResource(R.mipmap.btn_pre_gray);
                     btVideoPrevious.setEnabled(false);
                     btVideoNext.setBackgroundResource(R.drawable.bg_bt_next_select);
                     btVideoNext.setEnabled(true);
-                }else if (mark == videoList.size() -1 ){
+                } else if (mark == videoList.size() - 1) {
                     btVideoPrevious.setBackgroundResource(R.drawable.bg_bt_previous_select);
                     btVideoPrevious.setEnabled(true);
                     btVideoNext.setBackgroundResource(R.mipmap.btn_next_gray);
                     btVideoNext.setEnabled(false);
-                }else {
+                } else {
                     btVideoPrevious.setBackgroundResource(R.drawable.bg_bt_previous_select);
                     btVideoPrevious.setEnabled(true);
                     btVideoNext.setBackgroundResource(R.drawable.bg_bt_next_select);
@@ -280,14 +310,13 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
      */
     public void setVideoViceo() {
         if (isVolume) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
             skViceo.setProgress(currentVolume);
-            Utli.ToastUtil(mContext, "音量为：" + currentVolume);
+            isVolume = false;
         } else {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
             skViceo.setProgress(0);
             isVolume = true;
-            Utli.ToastUtil(mContext, "没有声音咯");
         }
     }
 
@@ -302,6 +331,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
         }
     }
+
     /**
      * 播放上一个视频
      */
@@ -313,6 +343,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             Toast.makeText(this, "亲，没有了", Toast.LENGTH_SHORT).show();
         }
     }
+
     /**
      * 播放暂停视频
      */
@@ -376,6 +407,34 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mGestureDetector.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startY = event.getY();
+                touchRang = Math.min(fullScreenH, fullScreenW);
+                mVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float endY = event.getY();
+                float distanceY = startY - endY;
+                float dalta = (distanceY / touchRang) * maxVolume;
+                int voice = (int) Math.min(Math.max(mVol + dalta, 0), maxVolume);
+                if (dalta != 0){
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,voice,0);
+                    currentVolume = voice;
+                    skViceo.setProgress(voice);
+                    if (voice == 0){
+                        isVolume = true;
+                    }else {
+                        isVolume = false;
+                    }
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY, 4000);
+                break;
+        }
         return super.onTouchEvent(event);
     }
 
@@ -394,9 +453,16 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (fromUser) {
+                if (progress > 0) {
+                    isVolume = false;
+                } else {
+                    isVolume = true;
+                }
                 currentVolume = progress;
                 seekBar.setProgress(currentVolume);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+            } else {
+                seekBar.setProgress(currentVolume);
             }
         }
 
@@ -420,6 +486,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
 
     }
+
     /**
      * 显示控制面板
      */
@@ -513,12 +580,18 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+
             return false;
         }
 
         @Override
         public void onLongPress(MotionEvent e) {
-
+            if (isFullScreen) {
+                setDefaultScreen();
+            } else {
+                setFullScreen();
+            }
         }
 
         @Override
@@ -527,4 +600,34 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+            currentVolume ++;
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,currentVolume,0);
+
+            skViceo.setProgress(currentVolume);
+            if (currentVolume == 0){
+                isVolume = true;
+            }else {
+                isVolume = false;
+            }
+            handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
+            handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY,4000);
+            return true;
+        }else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
+            currentVolume --;
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,currentVolume,0);
+            skViceo.setProgress(currentVolume);
+            if (currentVolume == 0){
+                isVolume = true;
+            }else {
+                isVolume = false;
+            }
+            handler.removeMessages(MEDIACONTROLLER_VISIBILITY);
+            handler.sendEmptyMessageDelayed(MEDIACONTROLLER_VISIBILITY,4000);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

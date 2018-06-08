@@ -1,7 +1,6 @@
 package com.example.administrator.moblieplayer.view.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
@@ -53,7 +52,6 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
         ButterKnife.bind(this);
-        initView();
 
     }
 
@@ -63,7 +61,7 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         transaction.add(R.id.fl_content, localVideoFragment);
         transaction.commit();
         Log.e(TAG, "initView: " + radioGroup.getChildCount());
-        ;
+
 
 
         mFragment = localVideoFragment;
@@ -104,8 +102,6 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
      */
 
     private void setFragment(int checkedId) {
-        FragmentManager manager = getFragmentManager();
-        Log.e(TAG, "initView: ==========radioGroup" + radioGroup.getCheckedRadioButtonId() + "======checkedId========" + checkedId);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         for (int i = 0; i <= radioGroup.getChildCount() - 1; i++) {
             if (checkedId == radioGroup.getChildAt(i).getId()) {
@@ -120,33 +116,35 @@ public class NavigationActivity extends BaseActivity implements TitleBar.TitleOn
         switch (checkedId) {
             case R.id.rbt_localmusic:
                 localMusicFragment = new LocalMusicFragment();
-                transaction.add(R.id.fl_content, localMusicFragment);
-                transaction.commit();
+                transaction.replace(R.id.fl_content, localMusicFragment);
                 mFragment = localMusicFragment;
 
                 break;
             case R.id.rbt_localvideo:
                 localVideoFragment = new LocalVideoFragment();
-                transaction.add(R.id.fl_content, localVideoFragment);
-                transaction.commit();
+                transaction.replace(R.id.fl_content, localVideoFragment);
                 mFragment = localVideoFragment;
                 break;
             case R.id.rbt_netvideo:
                 netVideoFragment = new NetVideoFragment();
-                transaction.add(R.id.fl_content, netVideoFragment);
-
-                transaction.commit();
+                transaction.replace(R.id.fl_content, netVideoFragment);
                 mFragment = netVideoFragment;
                 break;
             case R.id.rbt_netmusic:
                 netMusicFragment = new NetMusicFragment();
-                transaction.add(R.id.fl_content, netMusicFragment);
-                transaction.commit();
+                transaction.replace(R.id.fl_content, netMusicFragment);
                 mFragment = netMusicFragment;
                 break;
 
 
         }
+        transaction.commit();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initView();
     }
 }

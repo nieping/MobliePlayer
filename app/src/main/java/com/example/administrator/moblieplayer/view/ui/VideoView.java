@@ -2,6 +2,7 @@ package com.example.administrator.moblieplayer.view.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 
 /**
  * Created by Administrator on 2018/6/6.
@@ -27,12 +28,14 @@ public class VideoView extends android.widget.VideoView {
 
     /**
      * 设置VideoViewSize 方法
-     * @param w
-     * @param h
+     * @param width
+     * @param height
      */
-    public void setVidoViewSize(int w,int h){
-
-        setMeasuredDimension(w,h);
+    public void setVidoViewSize(int width,int height){
+        ViewGroup.LayoutParams params = getLayoutParams();
+        params.height = height;
+        params.width = width;
+        setLayoutParams(params);
 
     }
 }

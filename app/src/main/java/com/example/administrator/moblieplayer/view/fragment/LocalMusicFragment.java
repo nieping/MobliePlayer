@@ -138,7 +138,8 @@ public class LocalMusicFragment extends BaseFragment {
         }).start();
 
     }
-    public static boolean isGrantExternalRW(Activity activity) {
+
+    public  boolean isGrantExternalRW(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -152,5 +153,4 @@ public class LocalMusicFragment extends BaseFragment {
 
         return true;
     }
-
 }
