@@ -2,6 +2,7 @@ package com.example.administrator.moblieplayer.view.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 
 /**
@@ -36,6 +37,8 @@ public class VideoView extends android.widget.VideoView {
         params.height = height;
         params.width = width;
         setLayoutParams(params);
+        Log.e("VideoView========", "setFullScreen: " + "fullScreenW = " + width + "fullScreenH=" + height);
+
 
     }
 }
