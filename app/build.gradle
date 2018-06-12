@@ -22,7 +22,6 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // compile project(':library')
-    compile project(':vitamio')
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
@@ -31,14 +30,18 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'org.xutils:xutils:3.5.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'//网络框架
-    compile 'com.android.support:appcompat-v7:26.1.0'//版本随意
-    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4'//下拉刷新
-    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4'//没有使用特殊Header，可以不加这行
-    implementation 'pub.devrel:easypermissions:1.2.0'//权限管理
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    //网络框架
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    //版本随意
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4'
+    //下拉刷新
+    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4'
+    //没有使用特殊Header，可以不加这行
+    implementation 'pub.devrel:easypermissions:1.2.0'
+    //权限管理
     /*compile("com.github.hotchemi:permissionsdispatcher:3.2.0") {
-        exclude module: "support-v13"
-    }
-    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3,2,0"*/
-
+            exclude module: "support-v13"
+        }
+        annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3,2,0"*/
 }

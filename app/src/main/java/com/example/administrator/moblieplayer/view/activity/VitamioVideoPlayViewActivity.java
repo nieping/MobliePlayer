@@ -41,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class VideoPlayViewActivity extends BaseActivity implements View.OnClickListener {
+public class VitamioVideoPlayViewActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.video)
     com.example.administrator.moblieplayer.view.ui.VideoView videoView;
     @BindView(R.id.tv_video_name)
@@ -78,8 +78,6 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     LinearLayout llInfo;
     @BindView(R.id.tv_netspeed)
     TextView tvNetSpeed;
-    @BindView(R.id.ll_play)
-    LinearLayout llPlay;
     @BindView(R.id.iv_video_play)
     ImageView ivVideoPlay;
     @BindView(R.id.ll_loading)
@@ -243,7 +241,6 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_video_play :
-                Log.e("iv_video_play", "onClick: ==========iv_video_play" );
                 playVideo();
                 break;
             case R.id.bt_viceo:
@@ -409,11 +406,11 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     public void playVideo() {
         if (videoView.isPlaying()) {
             videoView.pause();
-            llPlay.setVisibility(View.VISIBLE);
+            ivVideoPlay.setVisibility(View.VISIBLE);
             btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_play_selcet);
         } else {
             videoView.start();
-            llInfo.setVisibility(View.GONE);
+            ivVideoPlay.setVisibility(View.GONE);
             btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_pause_selcet);
         }
     }

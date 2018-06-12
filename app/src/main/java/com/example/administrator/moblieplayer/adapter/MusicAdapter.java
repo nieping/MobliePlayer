@@ -12,6 +12,7 @@ import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.baen.MediaBaen;
 import com.example.administrator.moblieplayer.view.activity.LocalMusicPlayActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +23,7 @@ public class MusicAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<MediaBaen> musicBaens = new ArrayList();
     private MediaBaen musicBaen;
+    private SimpleDateFormat time = new SimpleDateFormat("mm:ss");
 
     private String TAG = MusicAdapter.class.getSimpleName();
     private int mark;
@@ -70,8 +72,8 @@ public class MusicAdapter extends BaseAdapter {
         }
         musicBaen = (MediaBaen) musicBaens.get(i);
         hodler.name.setText(musicBaen.getName());
-        hodler.time.setText(musicBaen.getSize());
-        hodler.size.setText((musicBaen.getSize()));
+        hodler.time.setText(time.format(musicBaen.getSize()));
+        hodler.size.setText(time.format(musicBaen.getSize()));
         hodler.imageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.music_default_bg));
         view.setOnClickListener(new View.OnClickListener() {
             @Override

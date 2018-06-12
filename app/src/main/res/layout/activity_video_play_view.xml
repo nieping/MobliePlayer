@@ -13,16 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
-    <ImageView
-        android:id="@+id/iv_video_play"
-        android:visibility="gone"
-        android:background="#33000000"
-        android:layout_centerInParent="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@mipmap/center_collect_play"/>
-
-
+    <include layout="@layout/ll_play"
+        android:id="@+id/ll_play"/>
     <include layout="@layout/video_controller"
         android:id="@+id/video_controller"/>
     <include layout="@layout/ll_info"

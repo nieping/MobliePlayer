@@ -71,14 +71,19 @@ public class LocalMusicPlayActivity extends BaseActivity implements View.OnClick
         ButterKnife.bind(this);
         mContext = this;
         intent = getIntent();
+
+
+        baen = musicBaens.get(mark);
+        initView();
+        initData();
+    }
+
+    private void initData() {
         if (intent != null){
             musicBaens = (ArrayList<MediaBaen>) intent.getSerializableExtra("musicBaens");
             mark = getIntent().getIntExtra("mark", 0);
 
         }
-
-        baen = musicBaens.get(mark);
-        initView();
     }
 
     private void initView() {
