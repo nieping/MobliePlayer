@@ -409,7 +409,6 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             ivVideoPlay.setVisibility(View.VISIBLE);
             btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_play_selcet);
         } else {
-            llLoading.setVisibility(View.VISIBLE);
             tvLoadingSpeed.setText(FileUtils.getNetSpeed(mContext));
             videoView.start();
             ivVideoPlay.setVisibility(View.GONE);
