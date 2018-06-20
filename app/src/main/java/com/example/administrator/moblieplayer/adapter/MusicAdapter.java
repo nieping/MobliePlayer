@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.baen.MediaBaen;
+import com.example.administrator.moblieplayer.utli.Utli;
 import com.example.administrator.moblieplayer.view.activity.LocalMusicPlayActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -25,7 +27,7 @@ public class MusicAdapter extends BaseAdapter {
 
     private String TAG = MusicAdapter.class.getSimpleName();
     private int mark;
-
+    private SimpleDateFormat time = new SimpleDateFormat("mm:ss");
     public MusicAdapter(Context context, ArrayList<MediaBaen> musicBaens) {
         this.context = context;
         this.musicBaens = musicBaens;
@@ -63,6 +65,7 @@ public class MusicAdapter extends BaseAdapter {
             hodler.name = view.findViewById(R.id.tv_name);
             hodler.size = view.findViewById(R.id.tv_size);
             hodler.time = view.findViewById(R.id.tv_duration);
+            hodler.artst = view.findViewById(R.id.tv_artst);
             view.setTag(hodler);
 
         } else {
@@ -70,8 +73,9 @@ public class MusicAdapter extends BaseAdapter {
         }
         musicBaen = (MediaBaen) musicBaens.get(i);
         hodler.name.setText(musicBaen.getName());
-        hodler.time.setText(musicBaen.getSize());
-        hodler.size.setText((musicBaen.getSize()));
+        hodler.time.setText(time.format(musicBaen.getDuration()));
+        hodler.size.setText(Utli.formatter(context,musicBaen.getSize()));
+        hodler.artst.setText(musicBaen.getArtist());
         hodler.imageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.music_default_bg));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,5 +96,6 @@ public class MusicAdapter extends BaseAdapter {
         private TextView name;
         private TextView time;
         private TextView size;
+        private TextView artst;
     }
 }

@@ -8,7 +8,7 @@
     tools:context="com.example.administrator.moblieplayer.view.activity.VideoPlayViewActivity">
 
 
-    <com.example.administrator.moblieplayer.view.ui.VideoView
+    <com.example.administrator.moblieplayer.view.ui.VitamioVideoView
         android:id="@+id/video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

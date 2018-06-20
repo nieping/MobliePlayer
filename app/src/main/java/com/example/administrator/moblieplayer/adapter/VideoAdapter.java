@@ -2,7 +2,6 @@ package com.example.administrator.moblieplayer.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,8 +10,10 @@ import android.widget.TextView;
 
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.baen.MediaBaen;
+import com.example.administrator.moblieplayer.utli.Utli;
 import com.example.administrator.moblieplayer.view.activity.VideoPlayViewActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -24,6 +25,7 @@ public class VideoAdapter extends BaseAdapter {
     private ArrayList<MediaBaen> videoList = new ArrayList();
     private int mark = 0;
     private String TAG = VideoAdapter.class.getSimpleName();
+    private SimpleDateFormat time = new SimpleDateFormat("mm:ss");
 
     public VideoAdapter(Context context, ArrayList<MediaBaen> videoList) {
         this.context = context;
@@ -72,8 +74,8 @@ public class VideoAdapter extends BaseAdapter {
         if (!videoList.isEmpty()) {
             final MediaBaen baen = videoList.get(i);
             hodler.name.setText(baen.getName());
-            // hodler.size.setText(baen.getDuration());
-            hodler.time.setText(baen.getSize());
+             hodler.size.setText(Utli.formatter(context,baen.getSize()));
+            hodler.time.setText(time.format(baen.getDuration()));
             hodler.imageView.setImageDrawable(context.getResources().getDrawable(R.mipmap.video_default_icon));
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -82,7 +84,6 @@ public class VideoAdapter extends BaseAdapter {
                     intent.setClass(context, VideoPlayViewActivity.class);
                     intent.putExtra("videoList", videoList);
                     intent.putExtra("mark", i);
-                    Log.e("tsg", "=" + i);
                     context.startActivity(intent);
 
                 }

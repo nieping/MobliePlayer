@@ -1,11 +1,12 @@
 package com.example.administrator.moblieplayer.view.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.baen.MediaBaen;
 import com.example.administrator.moblieplayer.utli.FileUtils;
 import com.example.administrator.moblieplayer.view.base.BaseActivity;
+import com.example.administrator.moblieplayer.view.ui.VitamioVideoView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,11 +40,12 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.vov.vitamio.MediaPlayer;
 
 
-public class VideoPlayViewActivity extends BaseActivity implements View.OnClickListener {
+public class VitamioVideoPlayViewActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.video)
-    com.example.administrator.moblieplayer.view.ui.VideoView videoView;
+    VitamioVideoView videoView;
     @BindView(R.id.tv_video_name)
     TextView tvVideoName;
     @BindView(R.id.tv_system_time)
@@ -122,7 +125,7 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_play_view);
+        setContentView(R.layout.activity_vitamio_video_play_view);
         ButterKnife.bind(this);
         intent = getIntent();
         mContext = this;
@@ -147,6 +150,9 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             videoList = (ArrayList<MediaBaen>) intent.getSerializableExtra("videoList");
             mark = intent.getIntExtra("mark", 0);
             getMediaBaen(mark);
+            if (videoList.size() == 0 && videoList == null){
+                uri = intent.getData();
+            }
             setButtonState();
         }
     }
@@ -184,11 +190,11 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                 btVideoPlay.setBackgroundResource(R.drawable.bg_bt_video_pause_selcet);
                 tvDuration.setText(time.format(videoView.getDuration()));
                 tvVideoName.setText(mediaBaen.getName());
-                skVideo.setMax(videoView.getDuration());
+                skVideo.setMax((int) videoView.getDuration());
                 handler.sendEmptyMessage(PLAY_STATUS);
                 llLoading.setVisibility(View.GONE);
-                llPlay.setVisibility(View.GONE);
                 handler.sendEmptyMessage(NET_SPEED);
+                llPlay.setVisibility(View.GONE);
                 mp.start();
                 setDefaultScreen();
 
@@ -197,7 +203,8 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
         videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                switchToVitamioVideoPlayViewActivity();
+               // switchToVitamioVideoPlayViewActivity();
+                showErrorDialog();
                 return true;
             }
         });
@@ -209,11 +216,28 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     }
 
     /**
+     * 播放错误对话框
+     */
+    private void showErrorDialog() {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("提示");
+        alertDialog.setMessage("无法播放此视频");
+        alertDialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        alertDialog.show() ;
+    }
+
+    /**
      * 跳转到VitamioVideoPalyViewActivity
      */
-    private void switchToVitamioVideoPlayViewActivity() {
+    private void switchToVideoPlayViewActivity() {
         Intent intent = new Intent();
-        intent.setClass(mContext, VitamioVideoPlayViewActivity.class);
+        intent.setClass(mContext, VideoPlayViewActivity.class);
         if (videoList != null && videoList.size() > 0) {
             intent.putExtra("videoList", videoList);
             intent.putExtra("mark", mark);
@@ -221,7 +245,6 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
             intent.putExtra("uri", uri);
         }
         startActivity(intent);
-
         finish();
     }
 
@@ -269,13 +292,14 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_play:
+                Log.e("====", "onClick: " + "======ll_play=========" );
                 playVideo();
                 break;
             case R.id.bt_viceo:
                 setVideoViceo();
                 break;
             case R.id.bt_switch:
-                switchToVitamioVideoPlayViewActivity();
+                switchToVideoPlayViewActivity();
                 break;
             case R.id.bt_video_exit:
                 finish();
@@ -476,14 +500,14 @@ public class VideoPlayViewActivity extends BaseActivity implements View.OnClickL
                 switch (msg.what) {
                     case NET_SPEED:
                         tvNetSpeed.setText(FileUtils.getNetSpeed(mContext));
-//                        tvLoadingSpeed.setText(FileUtils.getNetSpeed(mContext));
+                        tvLoadingSpeed.setText(FileUtils.getNetSpeed(mContext));
 
                         break;
                     case PLAY_STATUS:
                         /**
                          * 更新视频播放进度
                          */
-                        currentPosition = videoView.getCurrentPosition();
+                        currentPosition = (int) videoView.getCurrentPosition();
                         tvSystemTime.setText(systemTime.format(System.currentTimeMillis()));
                         tvCurrentTime.setText(time.format(currentPosition));
                         skVideo.setProgress(currentPosition);

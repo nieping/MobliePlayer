@@ -128,10 +128,11 @@ public class LocalVideoFragment extends Fragment {
                     while (cursor.moveToNext()) {
                         String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
                         String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME));
-                        String size = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+                        int size = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+                        int duration =cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                         int data = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
                         String artst = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.ARTIST));
-                        MediaBaen videoBaen = new MediaBaen(name, path, size, data, artst);
+                        MediaBaen videoBaen = new MediaBaen(name, path, size, data, artst,duration);
                         videoBaenList.add(videoBaen);
                     }
                 } catch (Exception e) {

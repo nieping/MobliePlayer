@@ -9,16 +9,27 @@ import java.io.Serializable;
 public class MediaBaen implements Serializable {
     private String name;
     private String path;
-    private String size;
+    private int size;
     private  int data;
     private String artist;
-    public MediaBaen(String name,String path,String size,int data,String artist){
+    private int duration;
+    public MediaBaen(String name,String path,int size,int data,String artist,int duration ){
         this.artist = artist;
         this.path = path;
         this.name = name;
         this.data = data;
         this.size = size;
+        this.duration = duration;
     }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     public String getName() {
         return name;
     }
@@ -35,11 +46,11 @@ public class MediaBaen implements Serializable {
         this.path = path;
     }
 
-    public String getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
