@@ -5,6 +5,6 @@ package com.example.administrator.moblieplayer.comparam;
  */
 
 public class Constants {
-    public static  final String AIQIYI_URL = "https://www.apiopen.top";
+    public static  final String AIQIYI_URL = "http://cache.video.iqiyi.com/jp/avlist/202861101/";
     public static final String QQMUSIC_URL = "";
 }

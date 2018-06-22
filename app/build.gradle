@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    // compile project(':library')
+    compile project(':vitamio')
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
@@ -41,7 +41,8 @@ dependencies {
     implementation 'pub.devrel:easypermissions:1.2.0'
     //权限管理
     /*compile("com.github.hotchemi:permissionsdispatcher:3.2.0") {
-            exclude module: "support-v13"
-        }
-        annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3,2,0"*/
+                    exclude module: "support-v13"
+                }
+                annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:3,2,0"*/
+    implementation files('D:/android/MobliePlayer/library/volley.jar')
 }

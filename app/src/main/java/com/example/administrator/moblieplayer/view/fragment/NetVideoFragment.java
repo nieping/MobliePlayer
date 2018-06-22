@@ -10,8 +10,18 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.administrator.moblieplayer.R;
 import com.example.administrator.moblieplayer.baen.NetVideoBean;
+import com.example.administrator.moblieplayer.comparam.Constants;
+import com.example.administrator.moblieplayer.service.listener.DefaultRequestListener;
+import com.example.administrator.moblieplayer.service.service.HttpJsonRequest;
+import com.example.administrator.moblieplayer.service.service.ResponseInfo;
 import com.example.administrator.moblieplayer.view.base.BaseFragment;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -75,6 +85,34 @@ public class NetVideoFragment extends BaseFragment {
     }
 
     private void initData() {
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        StringRequest request = new StringRequest(Constants.AIQIYI_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                tvNullNetVideo.setText(s);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
 
+            }
+        });
+        requestQueue.add(request);
     }
+    HttpJsonRequest<ResponseInfo<NetVideoBean>> request = new HttpJsonRequest<>(mContext, new DefaultRequestListener<ResponseInfo<NetVideoBean>>() {
+        @Override
+        public void onRequestSuccess(String operationCode, ResponseInfo<NetVideoBean> objdect) {
+
+        }
+
+        @Override
+        public void onRequestFailure(String operationCode, Request object) {
+
+        }
+
+        @Override
+        public void onPreRequest(String operationCode) {
+
+        }
+    });
 }
